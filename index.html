@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diceware Password Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 400px;
+            margin: 40px auto;
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .diceware-container {
+            margin-top: 40px;
+        }
+        .diceware-button {
+            background-color: #000;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .diceware-button:hover {
+            background-color: #333;
+        }
+        .note {
+            font-size: 12px;
+            margin-top: 20px;
+        }
+        .eff-note {
+            font-size: 12px;
+            margin-top: 10px;
+            color: blue;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Diceware Password Generator</h1>
+        <div class="diceware-container">
+            <h2>Generate a secure password using the Diceware method</h2>
+            <button class="diceware-button" id="diceware-button">Generate Password</button>
+            <div id="diceware-result"></div>
+        </div>
+        <div class="note">
+            &copy; Roloit <a href="https://github.com/roloit/roloit.tech-diceware" target="_blank">This page is open source</a>
+        </div>
+        <div class="eff-note" onclick="window.open('https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt')">Wordlist from EFF</div>
+    </div>
+    <script>
+        const dicewareButton = document.getElementById('diceware-button');
+        const dicewareResult = document.getElementById('diceware-result');
+        dicewareButton.addEventListener('click', generateDicewarePassword);
+
+        let wordlist = [];
+
+        fetch('list.txt')
+            .then(response => response.text())
+            .then(data => {
+                wordlist = data.split('\n');
+            });
+
+        function generateDicewarePassword() {
+            if (wordlist.length === 0) {
+                alert('Wordlist not loaded yet. Please try again later.');
+                return;
+            }
+            const password = [];
+            for (let i = 0; i < 5; i++) {
+                const index = Math.floor(Math.random() * wordlist.length);
+                password.push(wordlist[index].trim());
+            }
+            dicewareResult.innerText = password.join(' ');
+        }
+    </script>
+</body>
+</html>
