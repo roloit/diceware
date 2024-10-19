@@ -9,7 +9,7 @@
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
         }
-        .container {
+.container {
             max-width: 400px;
             margin: 40px auto;
             text-align: center;
@@ -19,10 +19,10 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        .diceware-container {
+.diceware-container {
             margin-top: 40px;
         }
-        .diceware-button {
+.diceware-button {
             background-color: #000;
             color: #fff;
             padding: 10px 20px;
@@ -30,18 +30,49 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        .diceware-button:hover {
+.diceware-button:hover {
             background-color: #333;
         }
-        .note {
+.note {
             font-size: 12px;
             margin-top: 20px;
         }
-        .eff-note {
+.eff-note {
             font-size: 12px;
             margin-top: 10px;
             color: blue;
             cursor: pointer;
+        }
+.diceware-result {
+            margin-top: 20px;
+            cursor: pointer;
+        }
+.password {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+.footer {
+            margin-top: 20px;
+            padding-bottom: 20px;
+        }
+.copyright-note {
+            font-size: 12px;
+            margin-top: 10px;
+            color: blue;
+            cursor: pointer;
+            display: inline;
+            margin-right: 5px;
+        }
+.open-source-note {
+            font-size: 12px;
+            margin-top: 10px;
+            color: blue;
+            cursor: pointer;
+            display: inline;
+            text-decoration: underline;
+        }
+.copy-button-container {
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -51,23 +82,28 @@
         <div class="diceware-container">
             <h2>Generate a secure password using the Diceware method</h2>
             <button class="diceware-button" id="diceware-button">Generate Password</button>
-            <div id="diceware-result"></div>
+            <div id="diceware-result-container" style="margin-top: 20px;"></div>
+            <div class="copy-button-container">
+                <button class="diceware-button" id="copy-button" style="display: none;">Copy</button>
+            </div>
         </div>
-        <div class="note">
-            &copy; Roloit <a href="https://github.com/roloit/roloit.tech-diceware" target="_blank">This page is open source</a>
+        <div class="footer">
+            <div class="copyright-note" onclick="window.open('https://github.com/roloit')"> &copy; Roloit</div>
+            <div class="open-source-note" onclick="window.open('https://github.com/roloit/roloit.tech-diceware')">This page is open source</div>
+            <div class="eff-note" onclick="window.open('https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt')">Wordlist from EFF</div>
         </div>
-        <div class="eff-note" onclick="window.open('https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt')">Wordlist from EFF</div>
     </div>
     <script>
         const dicewareButton = document.getElementById('diceware-button');
-        const dicewareResult = document.getElementById('diceware-result');
-        dicewareButton.addEventListener('click', generateDicewarePassword);
+        const copyButton = document.getElementById('copy-button');
+        const dicewareResultContainer = document.getElementById('diceware-result-container');
+        let clicked = false;
 
         let wordlist = [];
 
         fetch('list.txt')
-            .then(response => response.text())
-            .then(data => {
+.then(response => response.text())
+.then(data => {
                 wordlist = data.split('\n');
             });
 
@@ -81,8 +117,19 @@
                 const index = Math.floor(Math.random() * wordlist.length);
                 password.push(wordlist[index].trim());
             }
-            dicewareResult.innerText = password.join(' ');
+            const passwordText = document.createElement('span');
+            passwordText.classList.add('password');
+            passwordText.textContent = password.join(' ');
+            dicewareResultContainer.innerHTML = '';
+            dicewareResultContainer.appendChild(passwordText);
+            copyButton.style.display = 'inline-block';
+            copyButton.addEventListener('click', function () {
+                navigator.clipboard.writeText(passwordText.textContent);
+            });
         }
+
+        dicewareButton.addEventListener('click', generateDicewarePassword);
     </script>
 </body>
 </html>
+
